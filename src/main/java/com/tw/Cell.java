@@ -1,9 +1,9 @@
 package com.tw;
 
-public class Grid {
+public class Cell {
     private boolean status;
 
-    public Grid(){
+    public Cell(){
         this.status = false;
     }
 
@@ -11,7 +11,7 @@ public class Grid {
         return this.status;
     }
 
-    public void setGridStatus(boolean status) {
-        this.status = status;
+    public void placeQueen() {
+        this.status = true;
     }
 }
