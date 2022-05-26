@@ -1,14 +1,16 @@
 package com.tw;
 
+import com.tw.exceptions.BoardLimitExceededException;
+
 import java.util.Random;
 
 public class ChessBoard {
     final int size;
     final Cell[][] board;
 
-    public ChessBoard() {
-        this.size = 8;
-        this.board = new Cell[size][size];
+    public ChessBoard(int size) {
+        this.size = size;
+        this.board = new Cell[this.size][this.size];
         clearBoard();
     }
 
@@ -20,10 +22,14 @@ public class ChessBoard {
         }
     }
 
-    public void placeRandomQueens(int numQueensToPlace) {
+    public void placeRandomQueens(int numQueensToPlace) throws BoardLimitExceededException {
+        int numberOfCells = (int) Math.pow(board.length, 2);
+        if (numQueensToPlace > numberOfCells) {
+            throw new BoardLimitExceededException();
+        }
         int maxBound = size - 1;
-        while (numQueensToPlace > 0) {
 
+        while (numQueensToPlace > 0) {
             Position position = getRandomPosition(maxBound);
             if (!hasQueen(position)) {
                 board[position.getX()][position.getY()].placeQueen();
@@ -36,34 +42,26 @@ public class ChessBoard {
         Random random = new Random();
         int xPosition = random.nextInt(maxBound);
         int yPosition = random.nextInt(maxBound);
-        return new Position(xPosition,yPosition);
+        return new Position(xPosition, yPosition);
     }
 
-    private boolean hasQueen(Position position) {
+    boolean hasQueen(Position position) {
         return board[position.getX()][position.getY()].getStatus();
     }
 
-    public boolean identifySafeLocation(Position position) {
-        if (!hasQueen(position)) {
-            return isSafe(position);
-        }
-        return false;
-    }
 
     public boolean isSafe(Position currentPosition) {
         Direction[] setOfDirections = Direction.values();
 
         for (Direction direction : setOfDirections) {
             Position bufferPosition = direction.getBufferPosition();
-            Position newPosition = getNextPosition(currentPosition, bufferPosition);
 
-            while (inBounds(newPosition)) {
-                if (hasQueen(newPosition)) {
+            while (inBounds(currentPosition)) {
+                if (hasQueen(currentPosition)) {
                     return false;
                 }
-                newPosition = getNextPosition(newPosition, bufferPosition);
+                currentPosition = getNextPosition(currentPosition, bufferPosition);
             }
-
         }
         return true;
     }
@@ -72,12 +70,14 @@ public class ChessBoard {
         return new Position(currentPosition.getX() + bufferPosition.getX(),
                 currentPosition.getY() + bufferPosition.getY());
     }
-    private boolean inBounds(Position position) {
-        Position origin = new Position(0,0);
-        Position maxPosition = new Position(size,size);
-        return (origin.getX() <= position.getX() && position.getX() < maxPosition.getX())
-                && (origin.getY() <= position.getY() && position.getY() < maxPosition.getY());
 
+    private boolean inBounds(Position position) {
+        Position origin = new Position(0, 0);
+        Position maxPosition = new Position(size, size);
+        boolean lowerBounds = origin.getX() <= position.getX() && position.getX() < maxPosition.getX();
+        boolean upperBounds = origin.getY() <= position.getY() && position.getY() < maxPosition.getY();
+
+        return lowerBounds && upperBounds;
     }
 
 }

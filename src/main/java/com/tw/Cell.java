@@ -3,7 +3,7 @@ package com.tw;
 public class Cell {
     private boolean status;
 
-    public Cell(){
+    public Cell() {
         this.status = false;
     }
 

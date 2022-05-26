@@ -2,19 +2,19 @@ package com.tw;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class GridTest {
+public class CellTest {
     @Test
     void shouldCheckIfGridIsEmpty() {
         Cell grid = new Cell();
-        assertEquals(grid.getStatus(),false);
+        assertThat(grid.getStatus()).isEqualTo(false);
     }
 
     @Test
     void shouldCheckIfQueenHasBeenPlacesInAParticularCell() {
         Cell grid = new Cell();
         grid.placeQueen();
-        assertEquals(grid.getStatus(),true);
+        assertThat(grid.getStatus()).isEqualTo(true);
     }
 }

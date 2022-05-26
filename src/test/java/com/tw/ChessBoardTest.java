@@ -1,33 +1,36 @@
 package com.tw;
 
 
+import com.tw.exceptions.BoardLimitExceededException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 
 public class ChessBoardTest {
     @Test
     void shouldCheckIfChessBoardIsCreated() {
-        ChessBoard chessBoard = new ChessBoard();
-        assertEquals(8, chessBoard.size);
+        ChessBoard chessBoard = new ChessBoard(8);
+        assertThat(chessBoard.size).isEqualTo(8);
     }
 
     @Test
     void shouldCheckIfCorrectNumberOfGridsAreCreatedInTheBoard() {
-        ChessBoard chessBoard = new ChessBoard();
-        assertEquals(64, Math.pow(chessBoard.board.length, 2));
+        ChessBoard chessBoard = new ChessBoard(8);
+        var numberOfCells = Math.pow(chessBoard.board.length, 2);
+        assertThat(numberOfCells).isEqualTo(64);
     }
 
     @Test
-    void shouldCheckIfAGridHasAQueenInIt() {
-        ChessBoard chessBoard = new ChessBoard();
-        assertEquals(false, chessBoard.board[0][1].getStatus());
+    void shouldCheckIfACellHasQueen() {
+        ChessBoard chessBoard = new ChessBoard(8);
+        assertThat(chessBoard.hasQueen(new Position(0,1))).isEqualTo(false);
     }
 
     @Test
-    void shouldCheckIfAllTheQueensArePlacedOnTheBoard() {
-        ChessBoard chessBoard = new ChessBoard();
+    void shouldCheckIfAllTheQueensArePlacedOnTheBoard() throws BoardLimitExceededException {
+        ChessBoard chessBoard = new ChessBoard(8);
         chessBoard.placeRandomQueens(8);
         int numberOfQueens = 0;
 
@@ -38,13 +41,20 @@ public class ChessBoardTest {
                 }
             }
         }
-        assertEquals(8, numberOfQueens);
+        assertThat(numberOfQueens).isEqualTo(8);
     }
 
     @Test
-    void shouldCheckIfACellIsSafeFromAttack() {
-        ChessBoard chessBoard = new ChessBoard();
-        chessBoard.placeRandomQueens(8);
-        assertEquals(true,chessBoard.identifySafeLocation(new Position(7,4)));
+    void shouldCheckIfACellIsSafeFromAttack() throws BoardLimitExceededException {
+        ChessBoard chessBoard = new ChessBoard(8);
+        chessBoard.placeRandomQueens(0);
+        assertThat( chessBoard.isSafe(new Position(7, 4))).isEqualTo(true);
+    }
+
+    @Test
+    void shouldNotPlaceQueensIfNumberOfQueensExceedTheBoardLimit() {
+        ChessBoard chessBoard = new ChessBoard(8);
+        Throwable thrown = catchThrowable(()-> chessBoard.placeRandomQueens(65));
+        assertThat(thrown).isInstanceOf(Exception.class);
     }
 }
