@@ -10,32 +10,32 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 
 public class ChessBoardTest {
     @Test
-    void shouldCheckIfChessBoardIsCreated() {
+    void shouldCheckIfChessBoardHasEqualNumberOfRowsAndColoumns() {
         ChessBoard chessBoard = new ChessBoard(8);
-        assertThat(chessBoard.size).isEqualTo(8);
+        assertThat(chessBoard.numberOfRows).isEqualTo(chessBoard.numberOfCols);
     }
 
     @Test
-    void shouldCheckIfCorrectNumberOfGridsAreCreatedInTheBoard() {
+    void shouldCheckIfCorrectNumberOfCellsArePresentInTheBoard() {
         ChessBoard chessBoard = new ChessBoard(8);
         var numberOfCells = Math.pow(chessBoard.board.length, 2);
         assertThat(numberOfCells).isEqualTo(64);
     }
 
     @Test
-    void shouldCheckIfACellHasQueen() {
+    void shouldCheckIfCellIsEmptyOnCreationOfBoard() {
         ChessBoard chessBoard = new ChessBoard(8);
-        assertThat(chessBoard.hasQueen(new Position(0,1))).isEqualTo(false);
+        assertThat(chessBoard.hasQueen(new Position(0, 1))).isEqualTo(false);
     }
 
     @Test
-    void shouldCheckIfAllTheQueensArePlacedOnTheBoard() throws BoardLimitExceededException {
+    void shouldCheckIfAllTheGivenNumberOfQueensArePlacedOnTheBoard() throws BoardLimitExceededException {
         ChessBoard chessBoard = new ChessBoard(8);
         chessBoard.placeRandomQueens(8);
         int numberOfQueens = 0;
 
-        for (int row = 0; row < chessBoard.size; row++) {
-            for (int col = 0; col < chessBoard.size; col++) {
+        for (int row = 0; row < chessBoard.numberOfRows; row++) {
+            for (int col = 0; col < chessBoard.numberOfCols; col++) {
                 if (chessBoard.board[row][col].getStatus()) {
                     numberOfQueens++;
                 }
@@ -48,13 +48,14 @@ public class ChessBoardTest {
     void shouldCheckIfACellIsSafeFromAttack() throws BoardLimitExceededException {
         ChessBoard chessBoard = new ChessBoard(8);
         chessBoard.placeRandomQueens(0);
-        assertThat( chessBoard.isSafe(new Position(7, 4))).isEqualTo(true);
+        assertThat(chessBoard.isSafe(new Position(7, 4))).isEqualTo(true);
     }
 
     @Test
     void shouldNotPlaceQueensIfNumberOfQueensExceedTheBoardLimit() {
         ChessBoard chessBoard = new ChessBoard(8);
-        Throwable thrown = catchThrowable(()-> chessBoard.placeRandomQueens(65));
+        Throwable thrown = catchThrowable(() -> chessBoard.placeRandomQueens(65));
         assertThat(thrown).isInstanceOf(Exception.class);
     }
+
 }

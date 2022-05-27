@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CellTest {
     @Test
-    void shouldCheckIfGridIsEmpty() {
+    void shouldCheckIfCellIsEmpty() {
         Cell grid = new Cell();
         assertThat(grid.getStatus()).isEqualTo(false);
     }
